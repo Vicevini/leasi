@@ -1,13 +1,21 @@
 import "reflect-metadata";
-import { createConnection } from "typeorm";
-import app from "./app";
+import express from "express";
+import bodyParser from "body-parser";
 import dotenv from "dotenv";
+import authRoutes from "./routes/authRoutes";
+import urlRoutes from "./routes/urlRoutes";
+import { AppDataSource } from "./data-source";
 
 dotenv.config();
 
+const app = express();
+app.use(bodyParser.json());
+app.use("/api/auth", authRoutes);
+app.use("/api/urls", urlRoutes);
+
 const PORT = process.env.PORT || 3000;
 
-createConnection()
+AppDataSource.initialize()
   .then(() => {
     console.log("Conectado ao banco de dados");
 
@@ -15,4 +23,6 @@ createConnection()
       console.log(`Servidor rodando na porta ${PORT}`);
     });
   })
-  .catch((error) => console.log(error));
+  .catch((error) =>
+    console.error("Error during Data Source initialization:", error)
+  );

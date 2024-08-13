@@ -2,24 +2,29 @@ import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
+  OneToMany,
   CreateDateColumn,
   UpdateDateColumn,
 } from "typeorm";
+import { URL } from "./URL";
 
 @Entity()
 export class User {
-  @PrimaryGeneratedColumn()
-  id!: number;
+  @PrimaryGeneratedColumn("uuid")
+  id: string;
 
   @Column({ unique: true })
-  email!: string;
+  email: string;
 
   @Column()
-  password!: string;
+  password: string;
+
+  @OneToMany(() => URL, (url) => url.user)
+  urls: URL[];
 
   @CreateDateColumn()
-  created_at!: Date;
+  created_at: Date;
 
   @UpdateDateColumn()
-  updated_at!: Date;
+  updated_at: Date;
 }
