@@ -1,30 +1,23 @@
-import {
-  Entity,
-  PrimaryGeneratedColumn,
-  Column,
-  ManyToOne,
-  CreateDateColumn,
-  UpdateDateColumn,
-} from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from "typeorm";
 import { User } from "./User";
 
 @Entity()
 export class URL {
   @PrimaryGeneratedColumn()
-  id: number;
+  id!: number;
 
   @Column()
-  original_url: string;
+  original_url!: string;
 
-  @Column({ unique: true })
-  short_url: string;
+  @Column()
+  short_url!: string;
+
+  @Column({ default: 0 })
+  clicks!: number;
+
+  @Column({ type: "timestamp", nullable: true })
+  deleted_at!: Date | null;
 
   @ManyToOne(() => User, (user) => user.urls)
-  user: User;
-
-  @CreateDateColumn()
-  created_at: Date;
-
-  @UpdateDateColumn()
-  updated_at: Date;
+  user?: User | null;
 }

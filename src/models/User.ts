@@ -8,23 +8,26 @@ import {
 } from "typeorm";
 import { URL } from "./URL";
 
-@Entity()
+@Entity("users")
 export class User {
   @PrimaryGeneratedColumn("uuid")
-  id: string;
+  id!: number;
 
-  @Column({ unique: true })
-  email: string;
+  @Column({ type: "varchar", unique: true })
+  email!: string;
+
+  @Column({ type: "varchar" })
+  password!: string;
 
   @Column()
-  password: string;
+  token!: string;
 
   @OneToMany(() => URL, (url) => url.user)
-  urls: URL[];
+  urls!: URL[];
 
-  @CreateDateColumn()
-  created_at: Date;
+  @CreateDateColumn({ type: "timestamp" })
+  created_at!: Date;
 
-  @UpdateDateColumn()
-  updated_at: Date;
+  @UpdateDateColumn({ type: "timestamp" })
+  updated_at!: Date;
 }

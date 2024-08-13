@@ -1,43 +1,46 @@
 import { Request, Response } from "express";
-import { getRepository } from "typeorm";
-import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import { AppDataSource } from "../data-source";
+import bcrypt from "bcryptjs";
 import { User } from "../models/User";
 
-const SECRET_KEY = process.env.JWT_SECRET || "your_secret_key";
+const saltRounds = 10;
 
 export const register = async (req: Request, res: Response) => {
   const { email, password } = req.body;
-  const userRepository = getRepository(User);
 
-  const existingUser = await userRepository.findOne({ where: { email } });
-  if (existingUser) {
-    return res.status(400).json({ message: "User already exists" });
+  const hashedPassword = await bcrypt.hash(password, saltRounds);
+
+  const user = new User();
+  user.email = email;
+  user.password = hashedPassword;
+
+  try {
+    await AppDataSource.getRepository(User).save(user);
+    res.status(201).json({ message: "User registered successfully" });
+  } catch (error) {
+    res.status(500).json({ message: "Error registering user", error });
   }
-
-  const hashedPassword = await bcrypt.hash(password, 10);
-
-  const user = userRepository.create({ email, password: hashedPassword });
-  await userRepository.save(user);
-
-  res.status(201).json({ message: "User registered successfully" });
 };
 
 export const login = async (req: Request, res: Response) => {
   const { email, password } = req.body;
-  const userRepository = getRepository(User);
 
-  const user = await userRepository.findOne({ where: { email } });
+  const user = await AppDataSource.getRepository(User).findOneBy({ email });
+
   if (!user) {
-    return res.status(400).json({ message: "Invalid credentials" });
+    return res.status(401).json({ message: "Invalid email or password" });
   }
 
-  const isMatch = await bcrypt.compare(password, user.password);
-  if (!isMatch) {
-    return res.status(400).json({ message: "Invalid credentials" });
+  const match = await bcrypt.compare(password, user.password);
+
+  if (!match) {
+    return res.status(401).json({ message: "Invalid email or password" });
   }
 
-  const token = jwt.sign({ id: user.id }, SECRET_KEY, { expiresIn: "1h" });
+  const token = jwt.sign({ userId: user.id }, "YOUR_SECRET_KEY", {
+    expiresIn: "1h",
+  });
 
   res.json({ token });
 };

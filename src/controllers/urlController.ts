@@ -1,34 +1,24 @@
 import { Request, Response } from "express";
+import { nanoid } from "nanoid";
 import { AppDataSource } from "../data-source";
 import { URL } from "../models/URL";
-import { User } from "../models/User";
-import { nanoid } from "nanoid";
+import { User } from "../models/User"; // Certifique-se de importar o modelo User se necessário
 
 export const shortenUrl = async (req: Request, res: Response) => {
-  const { originalUrl } = req.body;
+  const { original_url } = req.body;
+  const short_url = nanoid();
 
-  // Obtém o repositório usando AppDataSource
-  const userRepository = AppDataSource.getRepository(User);
-  const urlRepository = AppDataSource.getRepository(URL);
-
-  // Obtém o usuário autenticado, se existir
-  const user = req.user;
+  const shortenedUrl = new URL();
+  shortenedUrl.original_url = original_url;
+  shortenedUrl.short_url = short_url;
+  shortenedUrl.user = req.user ?? null; // Adicione a propriedade user
 
   try {
-    // Cria uma nova URL encurtada
-    const url = urlRepository.create({
-      original_url: originalUrl,
-      short_url: nanoid(6),
-      ...(user && { user }), // Inclui o usuário apenas se ele existir
+    await AppDataSource.getRepository(URL).save(shortenedUrl);
+    res.json({
+      short_url: `${req.protocol}://${req.get("host")}/${short_url}`,
     });
-
-    // Salva a URL no banco de dados
-    await urlRepository.save(url);
-
-    res.status(201).json(url);
   } catch (error) {
-    res
-      .status(500)
-      .json({ error: "An error occurred while shortening the URL." });
+    res.status(500).json({ message: "Error shortening URL", error });
   }
 };
