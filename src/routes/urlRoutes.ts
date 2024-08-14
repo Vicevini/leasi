@@ -4,10 +4,8 @@ import { authenticateToken } from "../middlewares/authMiddleware"; // Certifique
 
 const router = Router();
 
-// Endpoint para encurtar URL com autenticação
-router.post("/shorten", authenticateToken, shortenUrl);
+router.post("/shorten-url", authenticateToken, shortenUrl);
 
-// Endpoint para encurtar URL sem autenticação
-router.post("/shorten/public", shortenUrl);
+router.post("/shorten-url/public", shortenUrl);
 
 export default router;

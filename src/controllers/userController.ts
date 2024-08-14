@@ -2,7 +2,6 @@ import { Request, Response } from "express";
 import { User } from "../models/User";
 import { AppDataSource } from "../data-source";
 
-// Criar um novo usuário
 export const createUser = async (req: Request, res: Response) => {
   const { name, email, password } = req.body;
 
@@ -16,7 +15,7 @@ export const createUser = async (req: Request, res: Response) => {
     const userRepository = AppDataSource.getRepository(User);
     const newUser = new User();
     newUser.email = email;
-    newUser.password = password; // Em produção, lembre-se de criptografar a senha
+    newUser.password = password;
 
     await userRepository.save(newUser);
     return res.status(201).json(newUser);
@@ -26,7 +25,6 @@ export const createUser = async (req: Request, res: Response) => {
   }
 };
 
-// Atualizar informações do usuário
 export const updateUser = async (req: Request, res: Response) => {
   const { id } = req.params;
   const { email } = req.body;
@@ -51,7 +49,6 @@ export const updateUser = async (req: Request, res: Response) => {
   }
 };
 
-// Obter informações do usuário
 export const getUser = async (req: Request, res: Response) => {
   const { id } = req.params;
 

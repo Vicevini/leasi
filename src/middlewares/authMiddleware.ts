@@ -2,7 +2,6 @@ import { Request, Response, NextFunction } from "express";
 import { AppDataSource } from "../data-source";
 import { User } from "../models/User";
 
-// Middleware para autenticação de token
 export const authenticateToken = async (
   req: Request,
   res: Response,
@@ -15,14 +14,12 @@ export const authenticateToken = async (
   }
 
   try {
-    // Encontrar o usuário pelo token
     const user = await AppDataSource.getRepository(User).findOneBy({ token });
 
     if (!user) {
       return res.status(401).json({ message: "Invalid token" });
     }
 
-    // Adicionar o usuário completo ao req.user
     req.user = user;
     next();
   } catch (error) {
