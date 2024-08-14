@@ -1,8 +1,10 @@
 import { Request, Response, NextFunction } from "express";
-import { AppDataSource } from "../data-source";
+import jwt from "jsonwebtoken";
 import { User } from "../models/User";
 
-export const authenticateToken = async (
+const secretKey = process.env.JWT_SECRET || "yourSecretKey";
+
+export const authenticateToken = (
   req: Request,
   res: Response,
   next: NextFunction
@@ -14,15 +16,10 @@ export const authenticateToken = async (
   }
 
   try {
-    const user = await AppDataSource.getRepository(User).findOneBy({ token });
-
-    if (!user) {
-      return res.status(401).json({ message: "Invalid token" });
-    }
-
-    req.user = user;
+    const decoded = jwt.verify(token, secretKey) as { id: number };
+    req.user = decoded.id as unknown as User;
     next();
   } catch (error) {
-    res.status(500).json({ message: "Error verifying token", error });
+    res.status(403).json({ message: "Invalid token" });
   }
 };

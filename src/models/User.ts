@@ -8,7 +8,7 @@ import {
 } from "typeorm";
 import { URL } from "./URL";
 
-@Entity("users")
+@Entity("User")
 export class User {
   @PrimaryGeneratedColumn("uuid")
   id!: number;
@@ -19,7 +19,7 @@ export class User {
   @Column({ type: "varchar" })
   password!: string;
 
-  @Column()
+  @Column({ type: "varchar", nullable: true, default: "" })
   token!: string;
 
   @OneToMany(() => URL, (url) => url.user)

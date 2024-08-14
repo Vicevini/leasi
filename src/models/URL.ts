@@ -1,7 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from "typeorm";
 import { User } from "./User";
 
-@Entity()
+@Entity("ShortnedUrl")
 export class URL {
   @PrimaryGeneratedColumn()
   id!: number;
@@ -18,6 +18,6 @@ export class URL {
   @Column({ type: "timestamp", nullable: true })
   deleted_at!: Date | null;
 
-  @ManyToOne(() => User, (user) => user.urls)
+  @ManyToOne(() => User, (user) => user.urls, { nullable: true })
   user?: User | null;
 }

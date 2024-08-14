@@ -14,11 +14,13 @@ export const register = async (req: Request, res: Response) => {
   const user = new User();
   user.email = email;
   user.password = hashedPassword;
+  user.token = "";
 
   try {
     await AppDataSource.getRepository(User).save(user);
     res.status(201).json({ message: "User registered successfully" });
   } catch (error) {
+    console.error("Error registering user:", error);
     res.status(500).json({ message: "Error registering user", error });
   }
 };
