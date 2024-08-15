@@ -8,7 +8,7 @@ import {
 import {
   authenticateToken,
   optionalAuthenticateToken,
-} from "../middlewares/authMiddleware"; // Certifique-se de que o nome está correto
+} from "../middlewares/authMiddleware";
 
 const router = Router();
 
