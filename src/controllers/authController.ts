@@ -44,5 +44,11 @@ export const login = async (req: Request, res: Response) => {
     expiresIn: "1h",
   });
 
+  const updatedUser = { ...user, token };
+
+  await AppDataSource.getRepository(User).save(updatedUser);
+
+  console.log("User logged in successfully");
+
   res.json({ token });
 };
