@@ -2,24 +2,30 @@ import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 import { User } from "../models/User";
 
-const secretKey = process.env.JWT_SECRET || "yourSecretKey";
+const secretKey = "SECRET_KEY";
 
 export const authenticateToken = (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
-  const token = req.headers.authorization?.split(" ")[1];
+  const authHeader = req.headers["authorization"];
+  const token = authHeader && authHeader.split(" ")[1];
 
   if (!token) {
-    return res.status(401).json({ message: "No token provided" });
+    return res.status(401).json({ message: "Token not provided" });
   }
 
-  try {
-    const decoded = jwt.verify(token, secretKey) as { id: number };
-    req.user = decoded.id as unknown as User;
+  jwt.verify(token, secretKey, (err, decoded) => {
+    if (err) {
+      console.error("Error verifying token:", err);
+      return res.status(403).json({ message: "Invalid token" });
+    }
+
+    const user = decoded as User;
+
+    req.user = user;
+
     next();
-  } catch (error) {
-    res.status(403).json({ message: "Invalid token" });
-  }
+  });
 };

@@ -19,6 +19,7 @@ export const register = async (req: Request, res: Response) => {
   try {
     await AppDataSource.getRepository(User).save(user);
     res.status(201).json({ message: "User registered successfully" });
+    console.log("User registered successfully");
   } catch (error) {
     console.error("Error registering user:", error);
     res.status(500).json({ message: "Error registering user", error });
@@ -40,7 +41,7 @@ export const login = async (req: Request, res: Response) => {
     return res.status(401).json({ message: "Invalid email or password" });
   }
 
-  const token = jwt.sign({ userId: user.id }, "YOUR_SECRET_KEY", {
+  const token = jwt.sign({ userId: user.id }, "SECRET_KEY", {
     expiresIn: "1h",
   });
 
