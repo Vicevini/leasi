@@ -46,3 +46,43 @@ export const authenticateToken = async (
     }
   });
 };
+
+export const optionalAuthenticateToken = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const authHeader = req.headers["authorization"];
+  const token = authHeader && authHeader.split(" ")[1];
+
+  if (!token) {
+    return next();
+  }
+
+  jwt.verify(token, secretKey, async (err, decoded) => {
+    if (err) {
+      console.error("Error verifying token:", err);
+      return res.status(403).json({ message: "Invalid token" });
+    }
+
+    const userId = (decoded as any).userId;
+
+    if (!userId) {
+      return res.status(403).json({ message: "Invalid token payload" });
+    }
+
+    try {
+      const user = await AppDataSource.getRepository(User).findOneBy({
+        id: userId,
+      });
+
+      if (user) {
+        req.user = user;
+      }
+      next();
+    } catch (error) {
+      console.error("Error retrieving user from database:", error);
+      return res.status(500).json({ message: "Internal server error" });
+    }
+  });
+};

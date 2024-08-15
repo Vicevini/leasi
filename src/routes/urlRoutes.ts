@@ -6,13 +6,14 @@ import {
   updateUrl,
   redirectToOriginalUrl,
 } from "../controllers/urlController";
-import { authenticateToken } from "../middlewares/authMiddleware"; // Certifique-se de que o nome está correto
+import {
+  authenticateToken,
+  optionalAuthenticateToken,
+} from "../middlewares/authMiddleware"; // Certifique-se de que o nome está correto
 
 const router = Router();
 
-router.post("/shorten-url", authenticateToken, shortenUrl);
-
-router.post("/shorten-url/public", shortenUrl);
+router.post("/shorten-url", optionalAuthenticateToken, shortenUrl);
 
 router.get("/shortUrls", authenticateToken, shortURLs);
 
