@@ -50,10 +50,10 @@ O servidor estará disponível em `http://localhost:3000`.
 
 - [x] Construir endpoints para autenticação de e-mail e senha que retorna um Bearer Token.
 - [x] Construir apenas um endpoint para encurtar o URL, ele deve receber um URL de origem e deve aceitar requisições com e sem autenticação, deve retornar o URL encurtado - incluindo o domínio.
-- [ ] Construir endpoints que aceitam apenas requisições autenticadas:
-  - [ ] Listagem de URLs encurtados pelo usuário com contabilização de cliques
-  - [ ] Deletar URL encurtado
-  - [ ] Atualizar a origem de um URL encurtado.
+- [x] Construir endpoints que aceitam apenas requisições autenticadas:
+  - [x] Listagem de URLs encurtados pelo usuário com contabilização de cliques
+  - [x] Deletar URL encurtado
+  - [x] Atualizar a origem de um URL encurtado.
 - [ ] Construir um endpoint que ao receber um URL encurtado, redirecione o usuário para o URL de origem e contabilize.
 
 ## Configuração e Ambiente
