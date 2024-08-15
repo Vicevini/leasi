@@ -1,4 +1,4 @@
-# leasi desenvolvimentos
+# Leasi Desenvolvimento
 
 ## Teste Processo Seletivo
 
@@ -14,7 +14,7 @@ Este projeto consiste em um sistema para encurtamento de URLs, desenvolvido com 
 npm install
 ```
 
-2. Inicie o servidor com o comando:
+1. Inicie o servidor com o comando:
 
 ```bash
 npm run dev
