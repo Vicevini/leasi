@@ -26,16 +26,16 @@ O servidor estará disponível em `http://localhost:3000`.
 
 - **Autenticação:**
 
-  - `POST /auth/register`: Registra um novo usuário. -> Ok
-  - `POST /auth/login`: Autentica um usuário e retorna um token JWT. -> Ok
+  - `POST /api/auth/register`: Registra um novo usuário. -> Ok
+  - `POST /api/auth/login`: Autentica um usuário e retorna um token JWT. -> Ok
 
 - **URLs:**
 
-  - `POST /shorten/shorten-url`: Encurta uma URL Autenticado. -> Ok
-  - `POST /shorten/shorten-url/public`: Encurta uma URL Autenticado. -> Ok
-  - `GET /api/urls`: Lista URLs encurtadas pelo usuário autenticado com a contagem de cliques.
-  - `PUT /api/urls/:id`: Atualiza a URL original de uma URL encurtada pelo usuário autenticado.
-  - `DELETE /api/urls/:id`: Deleta logicamente uma URL encurtada pelo usuário autenticado.
+  - `POST /api/shorten/shorten-url`: Encurta uma URL Autenticado. -> Ok
+  - `POST /api/shorten/shorten-url/public`: Encurta uma URL Autenticado. -> Ok
+  - `GET /api/shorten/shortUrls`: Lista URLs encurtadas pelo usuário autenticado com a contagem de cliques.
+  - `PUT /api/shorten/shortUrls/:id`: Atualiza a URL original de uma URL encurtada pelo usuário autenticado.
+  - `DELETE /api/shorten/shortUrls/:id`: Deleta logicamente uma URL encurtada pelo usuário autenticado.
 
 - **Redirecionamento:**
   - `GET /:shortUrl`: Redireciona para a URL original e incrementa a contagem de cliques.

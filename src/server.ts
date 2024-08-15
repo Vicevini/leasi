@@ -2,13 +2,17 @@ import express from "express";
 import bodyParser from "body-parser";
 import authRoutes from "./routes/authRoutes";
 import urlRoutes from "./routes/urlRoutes";
-import { AppDataSource } from "./data-source"; // Importa o DataSource configurado
+import { AppDataSource } from "./data-source";
 
 const app = express();
 app.use(bodyParser.json());
 
-app.use("/auth", authRoutes);
-app.use("/shorten", urlRoutes);
+app.get("/", (req, res) => {
+  res.send("API de Encurtamento de URLs está funcionando!");
+});
+
+app.use("/api/auth", authRoutes);
+app.use("/api/shorten", urlRoutes);
 
 AppDataSource.initialize()
   .then(async () => {
