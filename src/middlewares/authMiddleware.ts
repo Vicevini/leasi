@@ -1,10 +1,11 @@
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 import { User } from "../models/User";
+import { AppDataSource } from "../data-source";
 
 const secretKey = "SECRET_KEY";
 
-export const authenticateToken = (
+export const authenticateToken = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -16,16 +17,32 @@ export const authenticateToken = (
     return res.status(401).json({ message: "Token not provided" });
   }
 
-  jwt.verify(token, secretKey, (err, decoded) => {
+  jwt.verify(token, secretKey, async (err, decoded) => {
     if (err) {
       console.error("Error verifying token:", err);
       return res.status(403).json({ message: "Invalid token" });
     }
 
-    const user = decoded as User;
+    const userId = (decoded as any).userId;
 
-    req.user = user;
+    if (!userId) {
+      return res.status(403).json({ message: "Invalid token payload" });
+    }
 
-    next();
+    try {
+      const user = await AppDataSource.getRepository(User).findOneBy({
+        id: userId,
+      });
+
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      req.user = user;
+      next();
+    } catch (error) {
+      console.error("Error retrieving user from database:", error);
+      return res.status(500).json({ message: "Internal server error" });
+    }
   });
 };
