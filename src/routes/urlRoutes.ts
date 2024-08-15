@@ -4,7 +4,6 @@ import {
   shortURLs,
   deleteUrl,
   updateUrl,
-  redirectToOriginalUrl,
 } from "../controllers/urlController";
 import {
   authenticateToken,
@@ -20,7 +19,5 @@ router.get("/shortUrls", authenticateToken, shortURLs);
 router.delete("/shortUrls/:id", authenticateToken, deleteUrl);
 
 router.put("/shortUrls/:id", authenticateToken, updateUrl);
-
-router.get("/redirect", redirectToOriginalUrl);
 
 export default router;

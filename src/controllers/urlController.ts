@@ -112,23 +112,3 @@ export const updateUrl = async (req: Request, res: Response) => {
     console.log(error);
   }
 };
-
-export const redirectToOriginalUrl = async (req: Request, res: Response) => {
-  const short_url = req.params.short_url;
-
-  try {
-    const url = await AppDataSource.getRepository(URL).findOneOrFail({
-      where: { short_url },
-    });
-
-    url.clicks++;
-
-    await AppDataSource.getRepository(URL).save(url);
-
-    res.redirect(url.original_url);
-  } catch (error) {
-    res
-      .status(500)
-      .json({ message: "Error redirecting to original URL", error });
-  }
-};
