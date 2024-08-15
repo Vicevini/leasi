@@ -4,14 +4,29 @@ import { URL } from "../models/URL";
 import { User } from "../models/User";
 
 export const shortenUrl = async (req: Request, res: Response) => {
-  const { original_url } = req.body;
+  const { linkOriginal } = req.body;
+
+  if (!linkOriginal) {
+    return res.status(400).json({ message: "A URL original é obrigatória." });
+  }
 
   try {
-    const { nanoid } = await import("nanoid");
-    const short_url = nanoid();
+    const generateShortUrl = (length: number): string => {
+      const characters =
+        "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+      let result = "";
+      for (let i = 0; i < length; i++) {
+        const randomIndex = Math.floor(Math.random() * characters.length);
+        result += characters.charAt(randomIndex);
+      }
+      return result;
+    };
+
+    const shortCode = generateShortUrl(6);
+    const short_url = `http://localhost/${shortCode}`;
 
     const shortenedUrl = new URL();
-    shortenedUrl.original_url = original_url;
+    shortenedUrl.original_url = linkOriginal;
     shortenedUrl.short_url = short_url;
 
     if (req.user) {
@@ -22,7 +37,7 @@ export const shortenUrl = async (req: Request, res: Response) => {
 
     await AppDataSource.getRepository(URL).save(shortenedUrl);
     res.json({
-      short_url: `${req.protocol}://${req.get("host")}/${short_url}`,
+      short_url: short_url,
     });
   } catch (error) {
     res.status(500).json({ message: "Error shortening URL", error });
